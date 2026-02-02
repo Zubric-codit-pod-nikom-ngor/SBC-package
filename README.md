@@ -34,3 +34,5 @@ thrd.start()
 ```
 
 getting the data from blockchain is done by using ```sbc_package.BlockChain().chain.fetch_current()```, ```.fetch_version()``` or ```.fetch_period()```. Also you can add blocks by using ```sbc_package.BlockChain().chain.add_block()```
+
+Warning! Do NOT try to interfere with module files or your blockchain data will probably never work because of encryption of core file, i repeat DO NOT change core files
