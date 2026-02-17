@@ -77,7 +77,7 @@ def pml(item3,item4):
 	rnum = nums[0]
 	for el in nums[1:]:
 		rnum = rnum*el
-	print(f'num: {rnum} | {rnum} / {item3} = {rnum/item3} | {rnum} / {item4} = {rnum/item4}')
+	# print(f'num: {rnum} | {rnum} / {item3} = {rnum/item3} | {rnum} / {item4} = {rnum/item4}')
 
 
 class MultipleEncodings:
@@ -106,7 +106,7 @@ class MultipleEncodings:
 		reverted = {}
 		for el in most_used:
 			reverted[most_used[el]] = el
-		print(reverted[min(reverted)],ddt)
+		# print(reverted[min(reverted)],ddt)
 		return ddt[reverted[min(reverted)]]
 
 
@@ -181,7 +181,7 @@ def encode_by_conversion(item: str):
 	ords = []
 	for el in item:
 		ords.append(str(ord(str(el))))
-	print('encoded:','|'.join(ords).encode())
+	# print('encoded:','|'.join(ords).encode())
 	return '|'.join(ords).encode()
 
 
@@ -191,8 +191,8 @@ def decode_by_conversion(item: bytes):
 	rstr = ''
 	for el in items:
 		rstr+=chr(int(el))
-	print('decoded:',eval(rstr))
-	return eval(rstr)
+	# print('decoded:',eval(rstr))
+	return rstr
 
 
 def encode_structed(ss):
