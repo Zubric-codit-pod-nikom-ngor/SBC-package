@@ -177,7 +177,7 @@ def much_harder_changes(s1: str, s2: str) -> list[str]:
 	return [*items]
 
 
-def combine_strings(s1: str, s2: str) -> str:
+def combine_strings_with_ends1(s1: str, s2: str) -> str:
 	s1 = f"{s1}"
 	crossings = {}
 	pi = 0
@@ -293,3 +293,327 @@ def combine_strings(s1: str, s2: str) -> str:
 		while '' in r2:
 			r2 = r2.replace("",'')
 		return r2[1:-1]
+
+
+def combine_strings1(s1: str, s2: str) -> str:
+	crossings = {}
+	pi = 0
+	for step in range(1,len(s2)):
+		for el in range(len(s2)):
+			period = s2[el:el + step + 1]
+			if s1.find(period, pi) != -1:
+				crossings[period] = s1.find(period, pi)
+				pi = s1.find(period, pi)
+		pi = 0
+	max_cross = {}
+	ss = []
+	sl = []
+	for el in crossings:
+		ss.append(el)
+		sl.append(len(el))
+	if len(crossings) == 0:
+		return s1 + s2
+	maximum = ss[sl.index(max(sl))]
+	max_cross[maximum] = crossings[maximum]
+	past_max = maximum
+	sl.pop(ss.index(maximum))
+	ss.remove(maximum)
+	for smthn in range(len(crossings)):
+		try:
+			maximum = ss[sl.index(max(sl))]
+			approval = 0
+			tapr = 0
+			for el in max_cross:
+				if maximum in el:
+					pass
+				else:
+					approval += 1
+				tapr += 1
+			if approval < tapr:
+				pass
+			else:
+				position = 0
+				if s2.find(maximum) + len(maximum) > len(s2) / 2:
+					position = 1
+				elif s2.find(maximum) + len(maximum) < len(s2) / 2:
+					position = -1
+				if position == 1 and s2.find(maximum) + len(maximum) == len(s2):
+					max_cross[maximum] = crossings[maximum]
+				elif position == -1 and s2.find(maximum) == 0:
+					max_cross[maximum] = crossings[maximum]
+			# print(position,maximum,s2.find(maximum),len(s2)/2,s2.find(maximum) + len(maximum))
+			sl.pop(ss.index(maximum))
+			ss.remove(maximum)
+		except Exception as err:
+			pass
+	anchors = {}
+	name = []
+	index = []
+	for el in max_cross:
+		name.append(el)
+		index.append(max_cross[el])
+	if len(index) == 0:
+		return s1 + s2
+	anchors[name[index.index(min(index))]] = min(index)
+	anchors[name[index.index(max(index))]] = max(index)
+	# print(anchors,crossings,max_cross)
+	hole = ''
+	if len(anchors) == 0:
+		return s1 + s2
+	if len(anchors) >= 2:
+		vals = []
+		name = []
+		for el in anchors:
+			name.append(el)
+			vals.append(anchors[el])
+		minval = {"min": [name[vals.index(min(vals))], min(vals)]}
+		maxval = {"max": [name[vals.index(max(vals))], max(vals)]}
+		lfind = 0
+		vals_ord = []
+		vals1 = []
+		order = []
+		for el in anchors:
+			vals1.append(s2.find(el))
+			vals_ord.append(el)
+		for el in range(len(vals1)):
+			order.append(vals_ord[vals1.index(min(vals1))])
+			vals_ord.pop(vals1.index(min(vals1)))
+			vals1.pop(vals1.index(min(vals1)))
+		# print(order)
+		for el in range(1000):
+			frst = s1.find(order[0], lfind)
+			lfind = frst
+			scnd = s1.find(order[1], lfind)
+			if scnd != -1:
+				intersection = set(order[0]) & set(order[1])
+				difference = set((*list(order[0]), *list(order[1]))) - intersection
+				# print(difference,'int')
+				hole = s1[frst:frst + len(difference) + 1]
+				# print(hole, frst, scnd)
+				break
+		r1 = s1[:frst]
+		r1 = r1 + s1[frst:].replace(hole, s2, 1)
+		return r1[1:-1]
+	else:
+		r2 = s1
+		r2 = r2.replace(max(anchors), s2, 1)
+		return r2[1:-1]
+#s1 = f"{s1}"
+'''		while '' in s1:
+			s1 = s1.replace("",'')
+		while '' in s1:
+			s1 = s1.replace("",'')'''
+'''		while '' in r1:
+			r1 = r1.replace("",'')
+		while '' in r1:
+			r1 = r1.replace("",'')'''
+'''		while '' in r2:
+			r2 = r2.replace("",'')
+		while '' in r2:
+			r2 = r2.replace("",'')'''
+
+def combine_strings(s2, s1):
+	crossings = {}
+	pi = 0
+	for step in range(len(s2)):
+		for el in range(len(s2)):
+			period = s2[el:el + step + 1]
+			if s1.find(period, pi) != -1:
+				crossings[period] = s1.find(period, pi)
+				pi = s1.find(period, pi)
+		pi = 0
+	max_cross = {}
+	ss = []
+	sl = []
+	for el in crossings:
+		ss.append(el)
+		sl.append(len(el))
+	if len(crossings) == 0:
+		return s1 + s2
+	maximum = ss[sl.index(max(sl))]
+	max_cross[maximum] = crossings[maximum]
+	past_max = maximum
+	sl.pop(ss.index(maximum))
+	ss.remove(maximum)
+	for smthn in range(len(crossings)):
+		try:
+			maximum = ss[sl.index(max(sl))]
+			approval = 0
+			tapr = 0
+			for el in max_cross:
+				if maximum in el:
+					pass
+				else:
+					approval += 1
+				tapr += 1
+			if approval < tapr:
+				pass
+			else:
+				position = 0
+				if s2.find(maximum) + len(maximum) > len(s2) / 2:
+					position = 1
+				elif s2.find(maximum) + len(maximum) < len(s2) / 2:
+					position = -1
+				# print(position, s2.find(maximum), s2.find(maximum)+len(maximum), len(s2), '"'+maximum+'"', len(s2)/2)
+				if position == 1 and s2.find(maximum) + len(maximum) == len(s2):
+					max_cross[maximum] = crossings[maximum]
+				elif position == -1 and s2.find(maximum) == 0:
+					max_cross[maximum] = crossings[maximum]
+			sl.pop(ss.index(maximum))
+			ss.remove(maximum)
+		except Exception as err:
+			pass
+	anchors = {}
+	name = []
+	index = []
+	for el in max_cross:
+		name.append(el)
+		index.append(max_cross[el])
+	anchors[name[index.index(min(index))]] = min(index)
+	anchors[name[index.index(max(index))]] = max(index)
+	# print(anchors)
+	if len(anchors) == 0:
+		return s1 + s2
+	if len(anchors) >= 2:
+		vals = []
+		name = []
+		for el in anchors:
+			name.append(el)
+			vals.append(anchors[el])
+		minval = {"min": [name[vals.index(min(vals))], min(vals)]}
+		maxval = {"max": [name[vals.index(max(vals))], max(vals)]}
+		hole = s1[minval["min"][1]:maxval["max"][1] + len(maxval["max"][0])]
+		lfind = 0
+		vals_ord = []
+		vals1 = []
+		order = []
+		for el in anchors:
+			vals1.append(s2.find(el))
+			vals_ord.append(el)
+		for el in range(len(vals1)):
+			order.append(vals_ord[vals1.index(min(vals1))])
+			vals_ord.pop(vals1.index(min(vals1)))
+			vals1.pop(vals1.index(min(vals1)))
+		# print(order)
+		for el in range(1000):
+			frst = s1.find(order[0], lfind)
+			lfind = frst + 1
+			scnd = s1.find(order[1], lfind)
+			if scnd != -1:
+				hole = s1[frst:scnd + len(maxval["max"][0])]
+				# print(hole, frst, scnd)
+				break
+		r1 = s1[:minval["min"][1]]
+		r1 = r1 + s1[minval["min"][1]:].replace(hole, s2, 1)
+		return r1
+	else:
+		r2 = s1
+		r2 = r2.replace(max(anchors), s2, 1)
+		return r2
+
+def combine_strings_with_ends(s1, s2):
+	s2 = f"{s2}"
+	crossings = {}
+	pi = 0
+	for step in range(len(s2)):
+		for el in range(len(s2)):
+			period = s2[el:el + step + 1]
+			if s1.find(period, pi) != -1:
+				crossings[period] = s1.find(period, pi)
+				pi = s1.find(period, pi)
+		pi = 0
+	max_cross = {}
+	ss = []
+	sl = []
+	for el in crossings:
+		ss.append(el)
+		sl.append(len(el))
+	if len(crossings) == 0:
+		return s1 + s2
+	maximum = ss[sl.index(max(sl))]
+	max_cross[maximum] = crossings[maximum]
+	past_max = maximum
+	sl.pop(ss.index(maximum))
+	ss.remove(maximum)
+	for smthn in range(len(crossings)):
+		try:
+			maximum = ss[sl.index(max(sl))]
+			approval = 0
+			tapr = 0
+			for el in max_cross:
+				if maximum in el:
+					pass
+				else:
+					approval += 1
+				tapr += 1
+			if approval < tapr:
+				pass
+			else:
+				position = 0
+				if s2.find(maximum) + len(maximum) > len(s2) / 2:
+					position = 1
+				elif s2.find(maximum) + len(maximum) < len(s2) / 2:
+					position = -1
+				# print(position, s2.find(maximum), s2.find(maximum)+len(maximum), len(s2), '"'+maximum+'"', len(s2)/2)
+				if position == 1 and s2.find(maximum) + len(maximum) == len(s2):
+					max_cross[maximum] = crossings[maximum]
+				elif position == -1 and s2.find(maximum) == 0:
+					max_cross[maximum] = crossings[maximum]
+			sl.pop(ss.index(maximum))
+			ss.remove(maximum)
+		except Exception as err:
+			pass
+	anchors = {}
+	name = []
+	index = []
+	for el in max_cross:
+		name.append(el)
+		index.append(max_cross[el])
+	anchors[name[index.index(min(index))]] = min(index)
+	anchors[name[index.index(max(index))]] = max(index)
+	# print(anchors)
+	if len(anchors) == 0:
+		return s1 + s2
+	if len(anchors) >= 2:
+		vals = []
+		name = []
+		for el in anchors:
+			name.append(el)
+			vals.append(anchors[el])
+		minval = {"min": [name[vals.index(min(vals))], min(vals)]}
+		maxval = {"max": [name[vals.index(max(vals))], max(vals)]}
+		hole = s1[minval["min"][1]:maxval["max"][1] + len(maxval["max"][0])]
+		lfind = 0
+		vals_ord = []
+		vals1 = []
+		order = []
+		for el in anchors:
+			vals1.append(s2.find(el))
+			vals_ord.append(el)
+		for el in range(len(vals1)):
+			order.append(vals_ord[vals1.index(min(vals1))])
+			vals_ord.pop(vals1.index(min(vals1)))
+			vals1.pop(vals1.index(min(vals1)))
+		for el in range(1000):
+			frst = s1.find(order[0], lfind)
+			lfind = frst + 1
+			scnd = s1.find(order[1], lfind)
+			if scnd != -1:
+				hole = s1[frst:scnd + len(maxval["max"][0])]
+				# print(hole, frst, scnd)
+				break
+		r1 = s1[:minval["min"][1]]
+		r1 = r1 + s1[minval["min"][1]:].replace(hole, s2, 1)
+		while '' in r1:
+			r1 = r1.replace("", '')
+		while '' in r1:
+			r1 = r1.replace("", '')
+		return r1
+	else:
+		r2 = s1
+		r2 = r2.replace(max(anchors), s2, 1)
+		while '' in r2:
+			r2 = r2.replace("", '')
+		while '' in r2:
+			r2 = r2.replace("", '')
+		return r2
