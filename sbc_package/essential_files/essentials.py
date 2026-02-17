@@ -5,7 +5,7 @@ import random
 import pickle
 import zlib
 from scipy.differentiate import derivative
-from sbc_package.essential_files.string_mergers import combine_strings
+from sbc_package.essential_files.string_mergers import combine_strings, combine_strings_with_ends
 import base64
 import socket
 import stun
@@ -124,6 +124,9 @@ def generate_member_key():
 # 		r2 = s1
 # 		r2 = r2.replace(max(anchors), s2, 1)
 # 		return r2
+
+
+initial_data = {}
 
 
 def get_external_ip():
@@ -343,7 +346,7 @@ class Proof_of_Slowness:
 			self.diff = self.ind1 - self.ind2
 		self.deriv = derivative(self.__der_funk, 1)
 		# print(f'PoW derivative = {self.deriv}')
-		if self.deriv.df >= 135000:
+		if self.deriv.df >= 100000:
 			return False
 		else:
 			return True
@@ -353,6 +356,7 @@ class Chain:
 	def __init__(self):
 		self.blocks = []
 		self.members = []
+		self.fetched_by = []
 
 	def copy(self):
 		nchain = Chain()
@@ -410,10 +414,18 @@ class Chain:
 				temp[divided[2]].append(divided[1])
 			nad = ''
 			for el in temp:
-				full = ''
+				try:
+					full = initial_data[el]
+					# print(initial_data)
+				except Exception as err:
+					# print(err,el)
+					full = ''
 				for ord in temp[el]:
 					try:
-						full = combine_strings(ord, full)
+						if '' in ord or '' in ord:
+							full = combine_strings_with_ends(ord, full)
+						else:
+							full = combine_strings(ord, full)
 						nad += ord
 					except KeyError as err:
 						pass
@@ -422,11 +434,11 @@ class Chain:
 					if blc.data.split('$!/')[2] == el:
 						blc: Block
 						copied = Block().import_(blc.export_())
-						if blc.sender != get_local_ip() or \
-							copied.sender != get_external_ip():
-							copied.sender = hashlib.sha224(str(blc.sender).encode()).hexdigest()
-							copied.data = hashlib.sha224(dpen.deep_encoding(str(blc.data)).export()).hexdigest()
-							copied.creation_time = hashlib.sha224(str(blc.creation_time).encode()).hexdigest()
+						# if blc.sender != get_local_ip() or \
+						# 	copied.sender != get_external_ip():
+						# 	copied.sender = hashlib.sha224(str(blc.sender).encode()).hexdigest()
+						# 	copied.data = hashlib.sha224(dpen.deep_encoding(str(blc.data)).export()).hexdigest()
+						# 	copied.creation_time = hashlib.sha224(str(blc.creation_time).encode()).hexdigest()
 						forming.append(copied)
 				forms['connected'][el] = nad
 				forms['merged'][el] = full
@@ -493,10 +505,8 @@ class Chain:
 				snapped = list_hash2.copy()
 				curr_hash2 = list_hash2[iteration]
 				if curr_hash2 == curr_hash1:
-					# print(f'identical hashes: {curr_hash1}, {curr_hash2}')
 					pass
 				else:
-					# print(f'fuck this, we shut down: {curr_hash1}, {curr_hash2}')
 					return False
 			except Exception as err:
 				if snapped == list_hash1:
@@ -518,10 +528,8 @@ class Chain:
 
 	def export_(self):
 		converted = pickle.dumps(self)
-		converted = compress(converted)
 		return converted
 
-	def import_(self, string):
-		converted = decompress(string)
-		classed = pickle.loads(converted)
+	def import_(self, string: bytes):
+		classed = pickle.loads(string)
 		return classed
